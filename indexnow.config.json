@@ -1,0 +1,12 @@
+{
+  "sites": [
+    {
+      "host": "mellstroy.me",
+      "key": "104d35d9cda7b4335046104b8265bf54",
+      "keyLocation": "https://mellstroy.me/104d35d9cda7b4335046104b8265bf54.txt",
+      "urls": [
+        "https://mellstroy.me/"
+      ]
+    }
+  ]
+}
