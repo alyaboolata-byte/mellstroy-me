@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SITE_URL, DESTINATION_URL, BRAND, OFFERS } from './site-config.mjs';
@@ -7,6 +8,7 @@ import { OFFER_COPY } from './offer-content.mjs';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const DIST = path.join(ROOT, 'dist');
+const STYLE_VERSION = createHash('sha256').update(fs.readFileSync(path.join(ROOT,'styles.css'))).digest('hex').slice(0,12);
 const TOPICS = ['bonuses','login','registration','mirror','casino','slots','payments','mobile','crypto','safety'];
 const languageNames = Object.fromEntries(LANGS);
 const esc = (value) => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -50,7 +52,7 @@ function head(lang,segment,title,description,ogImage='/assets/favicon.webp') {
   const canonical = url(lang,segment);
   const alternates = LANGS.map(([code])=>`<link rel="alternate" hreflang="${code}" href="${esc(url(code,segment))}">`).join('');
   const jsonLd = JSON.stringify({ '@context':'https://schema.org', '@type':'WebPage', name:title, description, url:canonical, inLanguage:lang });
-  return `<!doctype html><html lang="${lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${esc(title)}</title><meta name="description" content="${esc(description)}"><meta name="robots" content="index,follow,max-image-preview:large"><link rel="canonical" href="${esc(canonical)}">${alternates}<link rel="alternate" hreflang="x-default" href="${esc(url('ru',segment))}"><link rel="icon" type="image/webp" href="/assets/favicon.webp"><meta property="og:type" content="website"><meta property="og:site_name" content="Mellstroy"><meta property="og:locale" content="${lang}"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(description)}"><meta property="og:url" content="${esc(canonical)}"><meta property="og:image" content="${esc(SITE_URL+ogImage)}"><meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#7131d9"><link rel="stylesheet" href="/styles.css"><script type="application/ld+json">${jsonLd.replace(/</g,'\\u003c')}</script><script defer src="/script.js"></script></head>`;
+  return `<!doctype html><html lang="${lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${esc(title)}</title><meta name="description" content="${esc(description)}"><meta name="robots" content="index,follow,max-image-preview:large"><link rel="canonical" href="${esc(canonical)}">${alternates}<link rel="alternate" hreflang="x-default" href="${esc(url('ru',segment))}"><link rel="icon" type="image/webp" href="/assets/favicon.webp"><meta property="og:type" content="website"><meta property="og:site_name" content="Mellstroy"><meta property="og:locale" content="${lang}"><meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(description)}"><meta property="og:url" content="${esc(canonical)}"><meta property="og:image" content="${esc(SITE_URL+ogImage)}"><meta name="twitter:card" content="summary_large_image"><meta name="theme-color" content="#7131d9"><link rel="stylesheet" href="/styles.css?v=${STYLE_VERSION}"><script type="application/ld+json">${jsonLd.replace(/</g,'\\u003c')}</script><script defer src="/script.js"></script></head>`;
 }
 
 function page(lang,segment,title,description,body,ogImage) {
