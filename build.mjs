@@ -13,8 +13,17 @@ const esc = (value) => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':
 const base = lang => lang === 'ru' ? '/' : `/${lang}/`;
 const url = (lang, segment = '') => SITE_URL + base(lang) + segment;
 const local = (lang, segment = '') => base(lang) + segment;
+// Original vector icons: no platform emoji or font-dependent symbols.
+const ICON_PATHS = {
+  external: 'M6 18 18 6M6 6h12v12',
+  arrow: 'M4 12h16m-6-6 6 6-6 6',
+  chevron: 'm6 9 6 6 6-6',
+  menu: 'M4 6h16M4 12h16M4 18h16',
+  plus: 'M5 12h14M12 5v14'
+};
+const icon = name => `<svg class="icon icon-${name}" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="${ICON_PATHS[name]}"></path></svg>`;
 const link = (href, label, cls = '') => `<a href="${esc(href)}" class="${cls}">${esc(label)}</a>`;
-const external = (label, cls = 'btn btn-primary') => `<a class="${cls}" href="${esc(DESTINATION_URL)}" target="_blank" rel="noopener noreferrer nofollow sponsored">${esc(label)}<span aria-hidden="true">↗</span></a>`;
+const external = (label, cls = 'btn btn-primary') => `<a class="${cls}" href="${esc(DESTINATION_URL)}" target="_blank" rel="noopener noreferrer nofollow sponsored">${esc(label)}${icon('external')}</a>`;
 const offerPath = id => `bonus/${id}/`;
 const topicPath = id => `guide/${id}/`;
 const offerName = (lang, offer) => OFFER_COPY[lang][offer.id][0];
@@ -24,12 +33,12 @@ const offerStat = offer => `${offer.percent}${offer.spins ? ` <small>+ ${offer.s
 
 function langSwitcher(lang, segment) {
   const current = languageNames[lang];
-  return `<div class="lang-control"><button class="lang-button" type="button" aria-expanded="false" aria-controls="lang-list" data-lang-button>${esc(current)}<span aria-hidden="true">⌄</span></button><div id="lang-list" class="lang-list" hidden>${LANGS.map(([code,name]) => `<a lang="${code}" hreflang="${code}" href="${local(code,segment)}" ${code===lang?'aria-current="page"':''}>${esc(name)}</a>`).join('')}</div></div>`;
+  return `<div class="lang-control"><button class="lang-button" type="button" aria-expanded="false" aria-controls="lang-list" data-lang-button>${esc(current)}${icon('chevron')}</button><div id="lang-list" class="lang-list" hidden>${LANGS.map(([code,name]) => `<a lang="${code}" hreflang="${code}" href="${local(code,segment)}" ${code===lang?'aria-current="page"':''}>${esc(name)}</a>`).join('')}</div></div>`;
 }
 
 function header(lang, segment) {
   const c = COPY[lang];
-  return `<header class="site-header"><div class="shell header-inner"><a href="${base(lang)}" class="brand" aria-label="Mellstroy"><img src="/assets/favicon.webp" width="46" height="46" alt=""><span>MELLSTROY</span></a><nav class="desktop-nav" aria-label="Navigation"><a href="${local(lang)}#offers">${esc(c.nav[0])}</a><a href="${local(lang)}#games">${esc(c.nav[1])}</a><a href="${local(lang,topicPath('login'))}">${esc(c.nav[2])}</a><a href="${local(lang)}#articles">${esc(c.nav[3])}</a></nav><div class="header-actions">${langSwitcher(lang,segment)}<button class="menu-button" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu" data-menu-button><span></span><span></span><span></span></button></div></div><nav id="mobile-menu" class="mobile-menu" hidden>${c.nav.map((name,i)=>`<a href="${[local(lang)+'#offers',local(lang)+'#games',local(lang,topicPath('login')),local(lang)+'#articles'][i]}">${esc(name)}</a>`).join('')}</nav></header>`;
+  return `<header class="site-header"><div class="shell header-inner"><a href="${base(lang)}" class="brand" aria-label="Mellstroy"><img src="/assets/favicon.webp" width="46" height="46" alt=""><span>MELLSTROY</span></a><nav class="desktop-nav" aria-label="Navigation"><a href="${local(lang)}#offers">${esc(c.nav[0])}</a><a href="${local(lang)}#games">${esc(c.nav[1])}</a><a href="${local(lang,topicPath('login'))}">${esc(c.nav[2])}</a><a href="${local(lang)}#articles">${esc(c.nav[3])}</a></nav><div class="header-actions">${langSwitcher(lang,segment)}<button class="menu-button" aria-label="Menu" aria-expanded="false" aria-controls="mobile-menu" data-menu-button>${icon('menu')}</button></div></div><nav id="mobile-menu" class="mobile-menu" hidden>${c.nav.map((name,i)=>`<a href="${[local(lang)+'#offers',local(lang)+'#games',local(lang,topicPath('login')),local(lang)+'#articles'][i]}">${esc(name)}</a>`).join('')}</nav></header>`;
 }
 
 function footer(lang) {
@@ -50,7 +59,7 @@ function page(lang,segment,title,description,body,ogImage) {
 
 function card(lang,offer) {
   const c=COPY[lang];
-  return `<article class="offer-card">${offerFigure(offer,true)}<div class="offer-card-body"><span class="offer-kicker">${esc(BRAND)}</span><h3>${esc(offerName(lang,offer))}</h3><div class="offer-number">${offerStat(offer)}</div><p>${esc(offerText(lang,offer))}</p><a class="text-link" href="${local(lang,offerPath(offer.id))}">${esc(c.details)}<span aria-hidden="true">→</span></a></div></article>`;
+  return `<article class="offer-card">${offerFigure(offer,true)}<div class="offer-card-body"><span class="offer-kicker">${esc(BRAND)}</span><h3>${esc(offerName(lang,offer))}</h3><div class="offer-number">${offerStat(offer)}</div><p>${esc(offerText(lang,offer))}</p><a class="text-link" href="${local(lang,offerPath(offer.id))}">${esc(c.details)}${icon('arrow')}</a></div></article>`;
 }
 
 function home(lang) {
@@ -59,8 +68,8 @@ function home(lang) {
   const offers = `<section id="offers" class="section offers"><div class="shell"><div class="section-heading"><div><span class="overline">01 / ${esc(c.nav[0])}</span><h2>${esc(c.offersTitle)}</h2><p>${esc(c.offersLead)}</p></div></div><div class="offer-grid">${OFFERS.map(o=>card(lang,o)).join('')}</div><p class="muted-note">${esc(c.note)}</p></div></section>`;
   const overview = `<section class="section overview"><div class="shell"><span class="overline">02 / ${esc(c.overviewTitle)}</span><div class="overview-grid"><h2>${esc(c.overviewTitle)}</h2><p>${esc(c.overviewLead)}</p></div><div class="steps">${c.steps.map(([n,title,text])=>`<article><span>${esc(n)}</span><h3>${esc(title)}</h3><p>${esc(text)}</p></article>`).join('')}</div></div></section>`;
   const games = `<section id="games" class="section games"><div class="shell games-layout"><div><span class="overline">03 / ${esc(c.nav[1])}</span><h2>${esc(c.featuredTitle)}</h2><p>${esc(c.featuredText)}</p><div class="game-links">${OFFERS.slice(2,6).map(o=>link(local(lang,offerPath(o.id)),offerName(lang,o),'game-pill')).join('')}</div></div><div class="game-preview">${offerFigure(OFFERS[2],true)}</div></div></section>`;
-  const articles = `<section id="articles" class="section articles"><div class="shell"><span class="overline">04 / ${esc(c.nav[3])}</span><div class="section-heading"><div><h2>${esc(c.articlesTitle)}</h2><p>${esc(c.articlesLead)}</p></div></div><div class="article-grid">${TOPICS.map((id,i)=>`<a href="${local(lang,topicPath(id))}" class="article-link"><span>${String(i+1).padStart(2,'0')}</span><h3>${esc(c.topicNames[id])}</h3><p>${esc(c.topicBody[id][0])}</p><b aria-hidden="true">↗</b></a>`).join('')}</div></div></section>`;
-  const faq = `<section class="section faq"><div class="shell faq-layout"><div><span class="overline">05 / FAQ</span><h2>${esc(c.faqTitle)}</h2></div><div>${c.faq.map(([q,a])=>`<details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('')}</div></div></section>`;
+  const articles = `<section id="articles" class="section articles"><div class="shell"><span class="overline">04 / ${esc(c.nav[3])}</span><div class="section-heading"><div><h2>${esc(c.articlesTitle)}</h2><p>${esc(c.articlesLead)}</p></div></div><div class="article-grid">${TOPICS.map((id,i)=>`<a href="${local(lang,topicPath(id))}" class="article-link"><span>${String(i+1).padStart(2,'0')}</span><h3>${esc(c.topicNames[id])}</h3><p>${esc(c.topicBody[id][0])}</p><b>${icon('external')}</b></a>`).join('')}</div></div></section>`;
+  const faq = `<section class="section faq"><div class="shell faq-layout"><div><span class="overline">05 / FAQ</span><h2>${esc(c.faqTitle)}</h2></div><div>${c.faq.map(([q,a])=>`<details><summary>${esc(q)}${icon('plus')}</summary><p>${esc(a)}</p></details>`).join('')}</div></div></section>`;
   const final = `<section class="final-cta"><div class="shell final-inner"><div><span class="overline">MELLSTROY</span><h2>${esc(c.heroTitle)}</h2></div>${external(c.cta)}</div></section>`;
   const description=c.description;
   return page(lang,'',c.title,description,hero+offers+overview+games+articles+faq+final,lang==='ru'?'/assets/crypto.webp':'/assets/favicon.webp');
@@ -70,7 +79,7 @@ function offerPage(lang,offer) {
   const c=COPY[lang], title=offerName(lang,offer), text=offerText(lang,offer), segment=offerPath(offer.id);
   const intro=`<section class="detail-hero"><div class="shell detail-grid">${offerFigure(offer,true)}<div><span class="overline">MELLSTROY / ${esc(c.offersTitle)}</span><h1>${esc(title)} — ${esc(c.offerPrefix)} ${esc(offer.percent)}</h1><p>${esc(text)}</p><div class="detail-stat">${offerStat(offer)}</div><div class="hero-actions">${external(c.cta)}${link(local(lang)+'#offers',c.offersTitle,'btn btn-outline')}</div></div></div></section>`;
   const explain=`<section class="section detail-content"><div class="shell reading-grid"><div><h2>${esc(c.termsTitle)}</h2><p>${esc(c.offerIntro)}</p><p>${esc(text)}</p></div><div class="condition-list">${c.terms.map((s,i)=>`<div><b>0${i+1}</b><p>${esc(s)}</p></div>`).join('')}</div></div></section>`;
-  const related=`<section class="section related"><div class="shell"><h2>${esc(c.offersTitle)}</h2><div class="related-grid">${OFFERS.filter(o=>o.id!==offer.id).slice(0,3).map(o=>`<a href="${local(lang,offerPath(o.id))}"><span>${esc(offerName(lang,o))}</span><strong>${esc(o.percent)}</strong><b aria-hidden="true">↗</b></a>`).join('')}</div><p class="muted-note">${esc(c.note)}</p></div></section>`;
+  const related=`<section class="section related"><div class="shell"><h2>${esc(c.offersTitle)}</h2><div class="related-grid">${OFFERS.filter(o=>o.id!==offer.id).slice(0,3).map(o=>`<a href="${local(lang,offerPath(o.id))}"><span>${esc(offerName(lang,o))}</span><strong>${esc(o.percent)}</strong><b>${icon('external')}</b></a>`).join('')}</div><p class="muted-note">${esc(c.note)}</p></div></section>`;
   return page(lang,segment,`${title} — ${c.offerPrefix} ${offer.percent} | Mellstroy`,`${text} ${c.termsTitle}.`,intro+explain+related,lang==='ru'?`/assets/${offer.image}`:'/assets/favicon.webp');
 }
 

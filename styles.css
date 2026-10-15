@@ -5,3 +5,15 @@
 @media(max-width:760px){.shell{width:min(100% - 36px,560px)}.header-inner{height:70px}.brand{font-size:18px}.brand img{width:36px;height:36px}.desktop-nav{display:none}.menu-button{display:flex}.lang-button{min-width:83px;padding:10px;font-size:11px}.hero-grid{display:flex;flex-direction:column;gap:0;padding-bottom:32px}.hero-copy{padding:50px 0 20px}.hero h1{font-size:clamp(37px,10vw,57px);line-height:1.07}.hero-lead{font-size:15px}.hero-collage{height:350px;width:100%;border-radius:23px}.hero-character{width:210%;left:-100%}.hero-badge{font-size:22px}.section{padding:68px 0}.section h2{font-size:34px}.offer-grid,.overview-grid,.games-layout,.faq-layout,.detail-grid,.reading-grid,.article-layout{grid-template-columns:1fr}.offer-card{grid-template-columns:39% 61%;min-height:230px}.offer-art{min-height:200px}.offer-card-body{padding:17px}.offer-card h3{font-size:17px}.offer-number{font-size:27px}.offer-card p{font-size:11px;margin:10px 0 12px}.steps{grid-template-columns:1fr;gap:10px;margin-top:25px}.steps article{padding:19px}.steps h3{margin:9px 0}.game-preview{height:320px}.article-grid{grid-template-columns:1fr}.article-link{min-height:150px}.faq-layout{gap:20px}.footer-grid{grid-template-columns:1fr 1fr;gap:30px}.footer-grid>div:first-child{grid-column:1/-1}.final-inner{align-items:start;flex-direction:column}.detail-grid{gap:25px}.detail-grid>.offer-art{height:325px}.detail-hero{padding:38px 0}.detail-hero h1,.article-hero h1{font-size:39px}.article-hero{padding:65px 0}.article-layout{gap:25px}.article-layout aside{position:static}.related-grid{grid-template-columns:1fr}.reading-grid{gap:25px}}
 @media(max-width:440px){.shell{width:calc(100% - 30px)}.brand{font-size:15px}.brand img{width:32px;height:32px}.header-actions{gap:5px}.lang-button{min-width:72px;max-width:100px;overflow:hidden;white-space:nowrap}.hero h1{font-size:37px}.btn{width:100%}.offer-card{display:flex;flex-direction:column}.offer-art{height:215px;min-height:215px}.offer-art img{width:205%}.offer-card-body{padding:19px}.offer-card p{font-size:13px}.offer-number{font-size:35px}.footer-grid{grid-template-columns:1fr}.footer-grid>div:first-child{grid-column:auto}.hero-collage{height:290px}.game-preview{height:240px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.offer-card,.btn{transition:none}}
+
+/* Custom vector controls; consistent on every device and locale. */
+.icon{display:block;width:20px;height:20px;flex:0 0 20px;color:inherit;vertical-align:middle}
+.lang-button .icon{width:16px;height:16px;flex-basis:16px;transition:transform .2s}
+.lang-button[aria-expanded="true"] .icon{transform:rotate(180deg)}
+.menu-button .icon{width:22px;height:22px;flex-basis:22px}
+.text-link .icon{width:18px;height:18px;flex-basis:18px}
+.faq summary{position:relative;list-style:none;padding-right:36px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary .icon{position:absolute;right:0;top:13px;color:var(--violet);transition:transform .2s}
+.faq details[open] summary .icon{transform:rotate(45deg)}
+@media(prefers-reduced-motion:reduce){.icon{transition:none!important}}
