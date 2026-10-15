@@ -25,6 +25,16 @@ for(const file of files){
   }
 }
 for(const offer of OFFERS) if(!fs.existsSync(path.join(dist,'assets',offer.image))) problems.push(`Missing asset ${offer.image}`);
+for(const [lang] of LANGS){
+  const home=fs.readFileSync(path.join(dist,lang==='ru'?'':lang,'index.html'),'utf8');
+  for(const offer of OFFERS){
+    const asset=lang==='ru'?offer.image:`${lang}-${offer.image}`;
+    if(!fs.existsSync(path.join(dist,'assets',asset))) problems.push(`Missing localized asset ${asset}`);
+    if(!home.includes(`<a class="bonus-banner" href="${DESTINATION_URL}"`) || !home.includes(`src="/assets/${asset}"`)) problems.push(`Banner ${lang} ${offer.id}`);
+    const detail=fs.readFileSync(path.join(dist,lang==='ru'?'':lang,'bonus',offer.id,'index.html'),'utf8');
+    if(!detail.includes(`src="/assets/${asset}"`) || !detail.includes(`property="og:image" content="https://mellstroy.me/assets/${asset}"`)) problems.push(`Offer locale ${lang} ${offer.id}`);
+  }
+}
 const xml=fs.readFileSync(path.join(dist,'sitemap.xml'),'utf8');
 if((xml.match(/<url>/g)||[]).length!==133) problems.push('Sitemap count');
 if(problems.length){console.error(problems.join('\n'));process.exitCode=1;}else console.log(`Verified ${files.length} pages, internal links, assets, CTAs, canonicals, hreflang and sitemap.`);

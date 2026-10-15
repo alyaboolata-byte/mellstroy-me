@@ -29,7 +29,8 @@ const external = (label, cls = 'btn btn-primary') => `<a class="${cls}" href="${
 const offerPath = id => `bonus/${id}/`;
 const topicPath = id => `guide/${id}/`;
 const offerName = (lang, offer) => OFFER_COPY[lang][offer.id][0];
-const offerFigure = (lang, offer) => `<img src="/assets/${offer.image}" loading="lazy" width="1672" height="940" alt="${esc(BRAND + ' — ' + offerName(lang,offer) + ', ' + offer.percent + (offer.spins ? ' + ' + offer.spins : ''))}">`;
+const offerImage = (lang, offer) => `/assets/${lang === 'ru' ? offer.image : `${lang}-${offer.image}`}`;
+const offerFigure = (lang, offer) => `<img src="${offerImage(lang,offer)}" loading="lazy" width="1672" height="940" alt="${esc(BRAND + ' — ' + offerName(lang,offer) + ', ' + offer.percent + (offer.spins ? ' + ' + offer.spins : ''))}">`;
 const banner = (lang,offer) => `<a class="bonus-banner" href="${esc(DESTINATION_URL)}" rel="nofollow sponsored noopener noreferrer" aria-label="${esc(offerName(lang,offer) + ' — ' + COPY[lang].cta)}">${offerFigure(lang,offer)}</a>`;
 const bannerRow = (lang, offers=OFFERS) => `<div class="bonus-row" tabindex="0" aria-label="${esc(COPY[lang].offersTitle)}">${offers.map(o=>banner(lang,o)).join('')}</div>`;
 
@@ -69,14 +70,14 @@ function home(lang) {
   const faq = `<section class="section faq"><div class="shell faq-layout"><div><span class="overline">05 / FAQ</span><h2>${esc(c.faqTitle)}</h2></div><div>${c.faq.map(([q,a])=>`<details><summary>${esc(q)}${icon('plus')}</summary><p>${esc(a)}</p></details>`).join('')}</div></div></section>`;
   const final = `<section class="final-cta"><div class="shell final-inner"><div><span class="overline">MELLSTROY</span><h2>${esc(c.heroTitle)}</h2></div>${external(c.cta)}</div></section>`;
   const description=c.description;
-  return page(lang,'',c.title,description,hero+offers+overview+games+articles+faq+final,lang==='ru'?'/assets/crypto.webp':'/assets/favicon.webp');
+  return page(lang,'',c.title,description,hero+offers+overview+games+articles+faq+final,offerImage(lang,OFFERS[0]));
 }
 
 function offerPage(lang,offer) {
   const c=COPY[lang], title=offerName(lang,offer), segment=offerPath(offer.id);
   const intro=`<section class="section offer-detail"><div class="shell"><h1>${esc(title)} | Mellstroy</h1>${banner(lang,offer)}</div></section>`;
   const related=`<section class="section related"><div class="shell"><h2>${esc(c.offersTitle)}</h2>${bannerRow(lang,OFFERS.filter(o=>o.id!==offer.id))}</div></section>`;
-  return page(lang,segment,`${title} | Mellstroy Casino`,`${title}. ${c.description}`,intro+related,`/assets/${offer.image}`);
+  return page(lang,segment,`${title} | Mellstroy Casino`,`${title}. ${c.description}`,intro+related,offerImage(lang,offer));
 }
 
 function topicPage(lang,id) {
