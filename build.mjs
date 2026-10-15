@@ -27,9 +27,9 @@ const external = (label, cls = 'btn btn-primary') => `<a class="${cls}" href="${
 const offerPath = id => `bonus/${id}/`;
 const topicPath = id => `guide/${id}/`;
 const offerName = (lang, offer) => OFFER_COPY[lang][offer.id][0];
-const offerText = (lang, offer) => OFFER_COPY[lang][offer.id][1];
-const offerFigure = (offer, decorative = false) => `<div class="offer-art ${offer.art === 'right' ? 'art-right' : 'art-left'} offer-${offer.id}"><img src="/assets/${offer.image}" loading="lazy" width="1672" height="940" alt="${decorative ? '' : esc(BRAND + ' ' + offer.label)}" ${decorative ? 'aria-hidden="true"' : ''}></div>`;
-const offerStat = offer => `${offer.percent}${offer.spins ? ` <small>+ ${offer.spins}</small>` : ''}`;
+const offerFigure = (lang, offer) => `<img src="/assets/${offer.image}" loading="lazy" width="1672" height="940" alt="${esc(BRAND + ' — ' + offerName(lang,offer) + ', ' + offer.percent + (offer.spins ? ' + ' + offer.spins : ''))}">`;
+const banner = (lang,offer) => `<a class="bonus-banner" href="${esc(DESTINATION_URL)}" rel="nofollow sponsored noopener noreferrer" aria-label="${esc(offerName(lang,offer) + ' — ' + COPY[lang].cta)}">${offerFigure(lang,offer)}</a>`;
+const bannerRow = (lang, offers=OFFERS) => `<div class="bonus-row" tabindex="0" aria-label="${esc(COPY[lang].offersTitle)}">${offers.map(o=>banner(lang,o)).join('')}</div>`;
 
 function langSwitcher(lang, segment) {
   const current = languageNames[lang];
@@ -57,17 +57,12 @@ function page(lang,segment,title,description,body,ogImage) {
   return `${head(lang,segment,title,description,ogImage)}<body>${header(lang,segment)}<main>${body}</main>${footer(lang)}</body></html>`;
 }
 
-function card(lang,offer) {
-  const c=COPY[lang];
-  return `<article class="offer-card">${offerFigure(offer,true)}<div class="offer-card-body"><span class="offer-kicker">${esc(BRAND)}</span><h3>${esc(offerName(lang,offer))}</h3><div class="offer-number">${offerStat(offer)}</div><p>${esc(offerText(lang,offer))}</p><a class="text-link" href="${local(lang,offerPath(offer.id))}">${esc(c.details)}${icon('arrow')}</a></div></article>`;
-}
-
 function home(lang) {
   const c=COPY[lang];
-  const hero = `<section class="hero"><div class="shell hero-grid"><div class="hero-copy"><p class="eyebrow">${esc(c.eyebrow)}</p><h1>${esc(c.heroTitle)}</h1><p class="hero-lead">${esc(c.heroText)}</p><div class="hero-actions">${external(c.cta)}${link('#offers',c.explore,'btn btn-outline')}</div></div><div class="hero-collage"><img class="hero-character" src="/assets/vip.webp" width="1672" height="940" alt="Mellstroy"><span class="hero-badge">660% <small>+ 400 FS</small></span></div></div></section>`;
-  const offers = `<section id="offers" class="section offers"><div class="shell"><div class="section-heading"><div><span class="overline">01 / ${esc(c.nav[0])}</span><h2>${esc(c.offersTitle)}</h2><p>${esc(c.offersLead)}</p></div></div><div class="offer-grid">${OFFERS.map(o=>card(lang,o)).join('')}</div><p class="muted-note">${esc(c.note)}</p></div></section>`;
+  const hero = `<section class="hero"><div class="shell brand-intro"><p class="eyebrow">MELLSTROY CASINO</p><h1>${esc(c.heroTitle)}</h1><p class="hero-lead">${esc(c.heroText)}</p><div class="hero-actions">${external(c.cta)}${link(local(lang,topicPath('registration')),c.register,'btn btn-outline')}</div></div></section>`;
+  const offers = `<section id="offers" class="section offers"><div class="shell"><h2>${esc(c.offersTitle)}</h2>${bannerRow(lang)}</div></section>`;
   const overview = `<section class="section overview"><div class="shell"><span class="overline">02 / ${esc(c.overviewTitle)}</span><div class="overview-grid"><h2>${esc(c.overviewTitle)}</h2><p>${esc(c.overviewLead)}</p></div><div class="steps">${c.steps.map(([n,title,text])=>`<article><span>${esc(n)}</span><h3>${esc(title)}</h3><p>${esc(text)}</p></article>`).join('')}</div></div></section>`;
-  const games = `<section id="games" class="section games"><div class="shell games-layout"><div><span class="overline">03 / ${esc(c.nav[1])}</span><h2>${esc(c.featuredTitle)}</h2><p>${esc(c.featuredText)}</p><div class="game-links">${OFFERS.slice(2,6).map(o=>link(local(lang,offerPath(o.id)),offerName(lang,o),'game-pill')).join('')}</div></div><div class="game-preview">${offerFigure(OFFERS[2],true)}</div></div></section>`;
+  const games = `<section id="games" class="section games"><div class="shell"><h2>${esc(c.featuredTitle)}</h2><p>${esc(c.featuredText)}</p><div class="game-links">${OFFERS.slice(2,6).map(o=>link(local(lang,offerPath(o.id)),offerName(lang,o),'game-pill')).join('')}</div></div></section>`;
   const articles = `<section id="articles" class="section articles"><div class="shell"><span class="overline">04 / ${esc(c.nav[3])}</span><div class="section-heading"><div><h2>${esc(c.articlesTitle)}</h2><p>${esc(c.articlesLead)}</p></div></div><div class="article-grid">${TOPICS.map((id,i)=>`<a href="${local(lang,topicPath(id))}" class="article-link"><span>${String(i+1).padStart(2,'0')}</span><h3>${esc(c.topicNames[id])}</h3><p>${esc(c.topicBody[id][0])}</p><b>${icon('external')}</b></a>`).join('')}</div></div></section>`;
   const faq = `<section class="section faq"><div class="shell faq-layout"><div><span class="overline">05 / FAQ</span><h2>${esc(c.faqTitle)}</h2></div><div>${c.faq.map(([q,a])=>`<details><summary>${esc(q)}${icon('plus')}</summary><p>${esc(a)}</p></details>`).join('')}</div></div></section>`;
   const final = `<section class="final-cta"><div class="shell final-inner"><div><span class="overline">MELLSTROY</span><h2>${esc(c.heroTitle)}</h2></div>${external(c.cta)}</div></section>`;
@@ -76,17 +71,16 @@ function home(lang) {
 }
 
 function offerPage(lang,offer) {
-  const c=COPY[lang], title=offerName(lang,offer), text=offerText(lang,offer), segment=offerPath(offer.id);
-  const intro=`<section class="detail-hero"><div class="shell detail-grid">${offerFigure(offer,true)}<div><span class="overline">MELLSTROY / ${esc(c.offersTitle)}</span><h1>${esc(title)} — ${esc(c.offerPrefix)} ${esc(offer.percent)}</h1><p>${esc(text)}</p><div class="detail-stat">${offerStat(offer)}</div><div class="hero-actions">${external(c.cta)}${link(local(lang)+'#offers',c.offersTitle,'btn btn-outline')}</div></div></div></section>`;
-  const explain=`<section class="section detail-content"><div class="shell reading-grid"><div><h2>${esc(c.termsTitle)}</h2><p>${esc(c.offerIntro)}</p><p>${esc(text)}</p></div><div class="condition-list">${c.terms.map((s,i)=>`<div><b>0${i+1}</b><p>${esc(s)}</p></div>`).join('')}</div></div></section>`;
-  const related=`<section class="section related"><div class="shell"><h2>${esc(c.offersTitle)}</h2><div class="related-grid">${OFFERS.filter(o=>o.id!==offer.id).slice(0,3).map(o=>`<a href="${local(lang,offerPath(o.id))}"><span>${esc(offerName(lang,o))}</span><strong>${esc(o.percent)}</strong><b>${icon('external')}</b></a>`).join('')}</div><p class="muted-note">${esc(c.note)}</p></div></section>`;
-  return page(lang,segment,`${title} — ${c.offerPrefix} ${offer.percent} | Mellstroy`,`${text} ${c.termsTitle}.`,intro+explain+related,lang==='ru'?`/assets/${offer.image}`:'/assets/favicon.webp');
+  const c=COPY[lang], title=offerName(lang,offer), segment=offerPath(offer.id);
+  const intro=`<section class="section offer-detail"><div class="shell"><h1>${esc(title)} | Mellstroy</h1>${banner(lang,offer)}</div></section>`;
+  const related=`<section class="section related"><div class="shell"><h2>${esc(c.offersTitle)}</h2>${bannerRow(lang,OFFERS.filter(o=>o.id!==offer.id))}</div></section>`;
+  return page(lang,segment,`${title} | Mellstroy Casino`,`${title}. ${c.description}`,intro+related,`/assets/${offer.image}`);
 }
 
 function topicPage(lang,id) {
   const c=COPY[lang], title=c.topicNames[id], body=c.topicBody[id], segment=topicPath(id);
   const hero=`<section class="article-hero"><div class="shell"><span class="overline">MELLSTROY / ${esc(c.nav[3])}</span><h1>${esc(title)}</h1><p>${esc(body[0])}</p></div></section>`;
-  const content=`<section class="section article-body"><div class="shell article-layout"><article><h2>${esc(title)}</h2><p>${esc(body[0])}</p><p>${esc(body[1])}</p><h2>${esc(c.overviewTitle)}</h2><p>${esc(c.overviewLead)}</p><div class="article-callout"><h3>${esc(c.termsTitle)}</h3><ul>${c.terms.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div><h2>${esc(c.faqTitle)}</h2>${c.faq.slice(0,2).map(([q,a])=>`<h3>${esc(q)}</h3><p>${esc(a)}</p>`).join('')}<p>${esc(c.note)}</p></article><aside><h2>${esc(c.footerTitle)}</h2>${TOPICS.filter(topic=>topic!==id).map(topic=>link(local(lang,topicPath(topic)),c.topicNames[topic])).join('')}</aside></div></section>`;
+  const content=`<section class="section article-body"><div class="shell article-layout"><article><h2>${esc(title)}</h2>${body.slice(1).map(text=>`<p>${esc(text)}</p>`).join('')}<div class="hero-actions">${external(c.cta)}</div></article><aside><h2>${esc(c.footerTitle)}</h2>${TOPICS.filter(topic=>topic!==id).map(topic=>link(local(lang,topicPath(topic)),c.topicNames[topic])).join('')}</aside></div></section>`;
   const final=`<section class="final-cta"><div class="shell final-inner"><div><span class="overline">MELLSTROY</span><h2>${esc(c.heroTitle)}</h2></div>${external(c.cta)}</div></section>`;
   return page(lang,segment,`${title} | Mellstroy Casino`,`${body[0]} ${body[1]}`,hero+content+final);
 }
