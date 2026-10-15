@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 
 const endpoint = "https://api.indexnow.org/indexnow";
 const config = JSON.parse(
-  await readFile(new URL("./indexnow.config.json", import.meta.url), "utf8"),
+  await readFile(new URL("./dist/indexnow.config.json", import.meta.url), "utf8"),
 );
 const dryRun = process.argv.includes("--dry-run");
 let failed = false;

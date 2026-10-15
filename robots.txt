@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://mellstroy.me/sitemap.xml

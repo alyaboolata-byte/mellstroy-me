@@ -1,11 +1,32 @@
 # Mellstroy.me
 
-Static Russian-language informational site about Mellstroy. The layout, decorative graphics, favicon, and SEO metadata are authored for this project. The saved archive supplied as a reference contained a 403 page and its scripts were not reused.
+Отдельный сайт о Mellstroy Casino с упором на бонусные предложения. Семь языков: русский (`/`), английский (`/en/`), португальский (`/pt/`), украинский (`/uk/`), хинди (`/hi/`), узбекский (`/uz/`) и казахский (`/kk/`).
 
-## Deploy
+## Где менять сайт через GitHub
 
-This is a static site with no build step. Import the repository into Vercel with the project root set to `/`, no build command, and the output directory set to `.`. Connect `mellstroy.me` in the Vercel project and point the domain's DNS records to the values Vercel provides.
+Открой репозиторий, выбери файл, нажми значок карандаша **Edit**, внеси правку и нажми **Commit changes** в ветку `main`.
 
-All outbound CTA buttons link to `https://r1wnbepa.life/?p=h3g6` and use `nofollow sponsored`.
+- `site-config.mjs` → `DESTINATION_URL`: одна внешняя ссылка для всех кнопок и языков. Здесь же список `OFFERS`: проценты, FS, порядок и изображения. Меняй бонусные цифры только после проверки актуальных условий.
+- `content.mjs` → заголовки, SEO-описания, FAQ и статьи по каждому из семи языков.
+- `offer-content.mjs` → локализованные названия и описания восьми бонусных карточек.
+- `styles.css` → цвета, отступы, карточки, мобильный дизайн.
+- `assets/` → изображения и `favicon.webp`.
 
-The site is an independent fan information project and is not affiliated with Mellstroy or the operator of the external link.
+Для изменения ссылки на всех кнопках достаточно **одной строки** в `site-config.mjs`. Ссылка из предыдущего состояния этого репозитория сохранена как временная — перепроверь её перед запуском трафика. Не меняй сгенерированную папку `dist`: Vercel создаёт её при сборке.
+
+## Проверка локально
+
+```sh
+npm run check
+npm run verify
+```
+
+Проект статический, зависимости не нужны. Vercel должен быть подключён к **этому** GitHub-репозиторию, ветка `main`, команда сборки `npm run build`, директория вывода `dist`. После коммита проверь новый deployment и страницу сайта. Наличие исходников в GitHub само по себе не доказывает, что Vercel настроен на автоматическое развёртывание.
+
+Сборка создаёт 133 HTML-страницы, `robots.txt` и `sitemap.xml`; канонические URL и `hreflang` формируются из одного списка. Поисковое индексирование и позиции не гарантируются публикацией или отправкой sitemap.
+
+Баннеры были утверждены как **дизайн-макеты**. Перед публикацией точных бонусных обещаний подтвердите проценты, FS, географию и условия у оператора.
+
+## Переобход
+
+После успешной публикации и проверки домена: `npm run build && node submit-indexnow.mjs`. Скрипт проверяет публичный ключ и отправляет все 133 URL из текущей сборки в IndexNow. Приём запроса не подтверждает индексацию. Google: отдельно отправить `https://mellstroy.me/sitemap.xml` в Search Console.

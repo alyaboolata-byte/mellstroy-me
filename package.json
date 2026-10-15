@@ -1,0 +1,1 @@
+{"name":"mellstroy-me","version":"2.0.0","private":true,"type":"module","scripts":{"build":"node build.mjs","check":"node --check build.mjs && node --check content.mjs && node --check offer-content.mjs && node --check site-config.mjs && node --check script.js && node --check verify.mjs","verify":"npm run build && node verify.mjs"}}
