@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import {reviewedCopy} from './copy-edits.mjs';
 
 // This runs on generated HTML. It never rewrites URLs, IDs, CSS, tracking,
 // verification, approved artwork or executable scripts.
@@ -9,38 +10,14 @@ const esc = s => String(s).replaceAll('&','&amp;').replaceAll('"','&quot;').repl
 const attr = (tag,name) => tag.match(new RegExp('\\b'+name+'\\s*=\\s*(["\'])(.*?)\\1','i'))?.[2];
 const boundary = word => new RegExp('(?<![\\p{L}\\p{N}])(?:'+word+')(?![\\p{L}\\p{N}])','giu');
 
+// Editorial changes are exact, reviewed phrases. Unknown sentences stay intact
+// and the positioning validator below reports stale wording instead of guessing.
+// Editorial changes are exact, reviewed phrases. Unknown sentences stay intact
+// and the positioning validator below reports stale wording instead of guessing.
+// Editorial changes are exact, reviewed phrases. Unknown sentences stay intact
+// and the positioning validator below reports stale wording instead of guessing.
 export function cleanCopy(value, lang='ru') {
-  let s=value.replace(/\b(Mostbet|Betano|Parimatch|Mellstroy|1win) guide\b/gi,'$1');
-  const phrases = {
-    ru:[[/В этом гиде/giu,'На этой странице'],[/в этом руководстве/giu,'на этой странице'],[/этот гид/giu,'этот сайт'],[/этого гида/giu,'этого сайта'],[/данное руководство/giu,'эта страница'],[/пошаговое руководство/giu,'пошаговая инструкция'],[/подробное руководство/giu,'подробная информация'],[/руководство по/giu,'информация о'],[/гид по/giu,'информация о'],[/путеводитель по/giu,'информация о']],
-    en:[[/read the guide/gi,'Read more'],[/explore the guide/gi,'Explore the website'],[/in this guide/gi,'On this page'],[/an information/gi,'a page'],[/an independent information/gi,'an independent website']],
-    de:[[/ein (?:unabhängiger )?(?:Leitfaden|Ratgeber|Wegweiser) zu/giu,'Informationen zu']],
-    pt:[[/um informações/giu,'um artigo'],[/este informações/giu,'este site'],[/neste informações/giu,'neste site']],
-    fr:[[/un information/giu,'un article']],
-    el:[[/έναν ανεξάρτητο πληροφορίες/giu,'έναν ανεξάρτητο ιστότοπο'],[/ένας ανεξάρτητος πληροφορίες/giu,'ένας ανεξάρτητος ιστότοπος']],
-  };
-  for(const [re,to] of phrases[lang]||[]) s=s.replace(re,to);
-  const words = {
-    ru:[['гид(?:а|у|ом|е|ы|ов|ам|ами|ах)?','сайт'],['путеводител(?:ь|я|ю|ем|е|и|ей|ям|ями|ях)','информация'],['руководства','разделы'],['руководство','информация']],
-    en:[['guides','pages'],['guide','page']],
-    de:[['Ratgeber|Leitfaden|Wegweiser|Guides?','Artikel']],
-    pt:[['guias','artigos'],['guia','artigo']],
-    es:[['guías','páginas'],['guía','página']],
-    it:[['guide','pagine'],['guida','pagina']],
-    fr:[['guides','articles'],['guide','article']],
-    ro:[['ghidurile','paginile'],['ghiduri','pagini'],['ghidului','site-ului'],['ghidul','site-ul'],['ghid','site']],
-    el:[['οδηγός','ιστότοπος'],['οδηγού','ιστότοπου'],['οδηγό','ιστότοπο'],['οδηγοί|οδηγούς|οδηγών','σελίδες']],
-    ar:[['الأدلة','الصفحات'],['دليل','موقع']],
-    hi:[['गाइड','जानकारी']],
-    uz:[['qo[‘’ʻ\x27]llanmalar','sahifalar'],['qo[‘’ʻ\x27]llanmasi','ma’lumoti'],['qo[‘’ʻ\x27]llanma','sahifa']],
-    tr:[['rehberler','sayfalar'],['rehberi','bilgileri'],['rehber','sayfa']],
-    az:[['bələdçilər','səhifələr'],['bələdçi','səhifə']],
-    uk:[['гід(?:а|у|ом|і|и|ів|ам|ами|ах)?','сайт'],['посібник(?:а|у|ом|и|ів)?','матеріал']],
-    kk:[['нұсқаулықтар','материалдар'],['нұсқаулық','ақпарат']],
-    tg:[['роҳнамо','маълумот']],
-  };
-  for(const [from,to] of words[lang]||[]) s=s.replace(boundary(from),to);
-  return s;
+  return reviewedCopy[lang]?.[value] ?? value;
 }
 
 const casino = {ru:'казино',en:'Casino',de:'Casino',pt:'cassino',es:'casino',ro:'cazino',el:'καζίνο',it:'casinò',fr:'casino',ar:'كازينو',hi:'कैसीनो',uz:'kazino',tr:'casino',az:'kazino',uk:'казино',kk:'казино',tg:'казино'};
