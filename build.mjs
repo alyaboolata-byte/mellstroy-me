@@ -107,3 +107,7 @@ indexConfig.sites[0].urls=segments.flatMap(segment=>LANGS.map(([lang])=>url(lang
 fs.writeFileSync(path.join(DIST,'indexnow.config.json'),JSON.stringify(indexConfig,null,2)+'\n');
 fs.writeFileSync(path.join(DIST,'robots.txt'),`User-agent: *\nAllow: /\nSitemap: ${SITE_URL}/sitemap.xml\n`);
 console.log(`Built ${LANGS.length * segments.length} pages in ${DIST}`);
+
+
+import {updateSearchCopy} from './search-copy.mjs';
+updateSearchCopy({out:'dist',brand:'Mellstroy'});

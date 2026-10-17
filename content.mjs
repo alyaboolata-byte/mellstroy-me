@@ -104,3 +104,8 @@ for (const [lang,values] of Object.entries(brandIntro)) {
  Object.assign(COPY[lang],{title,description,heroTitle,heroText,note});
  COPY[lang].topicBody.crypto[1]=COPY[lang].topicBody.payments[1];
 }
+
+
+// Payment topic and promotional offer have different search intent.
+COPY.en.topicNames.crypto='Mellstroy Casino crypto payments';
+COPY.pt.topicNames.crypto='Pagamentos com criptomoedas no Mellstroy Casino';
