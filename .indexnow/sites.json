@@ -1,0 +1,15 @@
+{
+  "project": "mellstroy-me",
+  "sites": [
+    {
+      "host": "mellstroy.me",
+      "projectId": "prj_yhz8MO4Ar5lhvikGApgJ7vPWFbjf",
+      "key": "104d35d9cda7b4335046104b8265bf54",
+      "keyLocation": "https://mellstroy.me/104d35d9cda7b4335046104b8265bf54.txt",
+      "markerUrl": "https://mellstroy.me/indexnow-deployment.json",
+      "fallbackUrls": [
+        "https://mellstroy.me/"
+      ]
+    }
+  ]
+}
