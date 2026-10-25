@@ -77,7 +77,7 @@ function offerPage(lang,offer) {
   const c=COPY[lang], title=offerName(lang,offer), segment=offerPath(offer.id);
   const intro=`<section class="section offer-detail"><div class="shell"><h1>${esc(title)} | Mellstroy</h1>${banner(lang,offer)}</div></section>`;
   const related=`<section class="section related"><div class="shell"><h2>${esc(c.offersTitle)}</h2>${bannerRow(lang,OFFERS.filter(o=>o.id!==offer.id))}</div></section>`;
-  return page(lang,segment,`${title} | Mellstroy Casino`,`${title}. ${c.description}`,intro+related,offerImage(lang,offer));
+  return page(lang,segment,`${title} | Mellstroy Casino | ${languageNames[lang]}`,`${title}. ${c.description}`,intro+related,offerImage(lang,offer));
 }
 
 function topicPage(lang,id) {
