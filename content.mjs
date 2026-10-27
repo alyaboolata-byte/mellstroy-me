@@ -112,6 +112,14 @@ for (const [lang,values] of Object.entries(brandIntro)) {
 COPY.en.topicNames.crypto='Mellstroy Casino crypto payments';
 COPY.pt.topicNames.crypto='Pagamentos com criptomoedas no Mellstroy Casino';
 
+Object.assign(COPY.ru,{brandText:'Меллстрой официальный сайт и Mellstroy Casino закрывают основной брендовый интент: актуальный вход, регистрация нового аккаунта, зеркало Меллстрой, казино, слоты, бонусы, промокод, пополнение, вывод и мобильная версия. С главной можно перейти к отдельной странице каждого действия без поиска по сайту.'});
+Object.assign(COPY.en,{brandText:'The Mellstroy official website and Mellstroy Casino search intent includes current login access, registration, mirror links, casino games, slots, bonuses, promo offers, payments, withdrawals and mobile use. Each task has a dedicated page linked from this overview.'});
+Object.assign(COPY.pt,{brandText:'A busca pelo site oficial Mellstroy e pelo Mellstroy Casino inclui acesso atual, cadastro, espelho, cassino, slots, bônus, promoções, depósitos, saques e versão móvel. Cada intenção possui uma página própria.'});
+Object.assign(COPY.uk,{brandText:'Запит про офіційний сайт Mellstroy і Mellstroy Casino охоплює актуальний вхід, реєстрацію, дзеркало, казино, слоти, бонуси, платежі, виведення коштів і мобільну версію. Для кожної дії є окрема сторінка.'});
+Object.assign(COPY.hi,{brandText:'Mellstroy आधिकारिक साइट और Mellstroy Casino खोज में लॉगिन, पंजीकरण, मिरर, कैसीनो, स्लॉट, बोनस, भुगतान, निकासी और मोबाइल उपयोग शामिल हैं। हर मुख्य कार्य के लिए अलग पेज दिया गया है।'});
+Object.assign(COPY.uz,{brandText:'Mellstroy rasmiy sayti va Mellstroy Casino qidiruvi kirish, ro‘yxatdan o‘tish, ko‘zgu, kazino, slotlar, bonuslar, to‘lovlar, pul yechish va mobil foydalanishni qamrab oladi. Har bir maqsad uchun alohida sahifa mavjud.'});
+Object.assign(COPY.kk,{brandText:'Mellstroy ресми сайты және Mellstroy Casino сұрауы кіру, тіркелу, айна, казино, слоттар, бонустар, төлемдер, ақша шығару және мобильді нұсқаны қамтиды. Әр әрекетке жеке бет берілген.'});
+
 // Each additional locale is editorially authored for its own search language.
 // It is merged here so every generated document receives native metadata,
 // headings, navigation, FAQs and intent-specific body copy.
