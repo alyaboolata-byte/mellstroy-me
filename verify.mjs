@@ -9,7 +9,7 @@ const problems=[];
 const files=[];
 const visit=d=>{for(const e of fs.readdirSync(d,{withFileTypes:true})){const p=path.join(d,e.name);e.isDirectory()?visit(p):e.name==='index.html'&&files.push(p);}};
 visit(dist);
-const expected=LANGS.length*(1+OFFERS.length+10);
+const expected=LANGS.length*(1+OFFERS.length+12);
 if(files.length!==expected) problems.push(`Expected ${expected} pages, got ${files.length}`);
 for(const file of files){
   const html=fs.readFileSync(file,'utf8');
