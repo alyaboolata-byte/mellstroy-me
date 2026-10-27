@@ -9,7 +9,7 @@ import { OFFER_COPY } from './offer-content.mjs';
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const DIST = path.join(ROOT, 'dist');
 const STYLE_VERSION = createHash('sha256').update(fs.readFileSync(path.join(ROOT,'styles.css'))).digest('hex').slice(0,12);
-const TOPICS = ['bonuses','login','registration','mirror','casino','slots','payments','mobile','crypto','safety'];
+const TOPICS = ['bonuses','promo','login','registration','mirror','casino','slots','payments','mobile','app','crypto','safety'];
 const languageNames = Object.fromEntries(LANGS);
 const cleanPunctuation = value => String(value).replace(/\s*[—–]\s*/g,' - ');
 const esc = (value) => cleanPunctuation(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
