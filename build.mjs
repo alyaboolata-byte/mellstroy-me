@@ -11,7 +11,8 @@ const DIST = path.join(ROOT, 'dist');
 const STYLE_VERSION = createHash('sha256').update(fs.readFileSync(path.join(ROOT,'styles.css'))).digest('hex').slice(0,12);
 const TOPICS = ['bonuses','login','registration','mirror','casino','slots','payments','mobile','crypto','safety'];
 const languageNames = Object.fromEntries(LANGS);
-const esc = (value) => String(value).replace(/[—–]/g,' - ').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const cleanPunctuation = value => String(value).replace(/\s*[—–]\s*/g,' - ');
+const esc = (value) => cleanPunctuation(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const base = lang => lang === 'ru' ? '/' : `/${lang}/`;
 const url = (lang, segment = '') => SITE_URL + base(lang) + segment;
 const local = (lang, segment = '') => base(lang) + segment;
@@ -60,7 +61,7 @@ const ogLocale = lang => ({ru:'ru_RU',pl:'pl_PL',en:'en_US',pt:'pt_BR',uk:'uk_UA
 function head(lang,segment,title,description,ogImage='/assets/favicon.webp') {
   const canonical = url(lang,segment);
   const alternates = LANGS.map(([code])=>`<link rel="alternate" hreflang="${code}" href="${esc(url(code,segment))}">`).join('');
-  const jsonLd = JSON.stringify({ '@context':'https://schema.org', '@type':'WebPage', name:title, description, url:canonical, inLanguage:lang });
+  const jsonLd = JSON.stringify({ '@context':'https://schema.org', '@type':'WebPage', name:cleanPunctuation(title), description:cleanPunctuation(description), url:canonical, inLanguage:lang });
   const image=SITE_URL+ogImage;
   const localeAlternates=LANGS.filter(([code])=>code!==lang).map(([code])=>`<meta property="og:locale:alternate" content="${ogLocale(code)}">`).join('');
   return `<!doctype html><html lang="${lang}"><head><meta name="google-site-verification" content="hsBZPHAVQ9-PA1MukTkZUEittSQKiXXVZHOxNp-sfjo"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${esc(title)}</title><meta name="description" content="${esc(description)}"><meta name="robots" content="index,follow,max-image-preview:large"><link rel="canonical" href="${esc(canonical)}">${alternates}<link rel="alternate" hreflang="x-default" href="${esc(url('en',segment))}"><link rel="icon" type="image/webp" href="/assets/favicon.webp"><meta property="og:type" content="website"><meta property="og:site_name" content="Mellstroy"><meta property="og:locale" content="${ogLocale(lang)}">${localeAlternates}<meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(description)}"><meta property="og:url" content="${esc(canonical)}"><meta property="og:image" content="${esc(image)}"><meta property="og:image:type" content="image/webp"><meta property="og:image:width" content="1672"><meta property="og:image:height" content="940"><meta property="og:image:alt" content="${esc(title)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${esc(title)}"><meta name="twitter:description" content="${esc(description)}"><meta name="twitter:image" content="${esc(image)}"><meta name="twitter:image:alt" content="${esc(title)}"><meta name="theme-color" content="#7131d9"><link rel="stylesheet" href="/styles.css?v=${STYLE_VERSION}"><script type="application/ld+json">${jsonLd.replace(/</g,'\\u003c')}</script><script defer src="/script.js"></script></head>`;
