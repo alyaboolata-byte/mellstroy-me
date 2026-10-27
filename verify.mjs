@@ -19,6 +19,7 @@ for(const file of files){
   if(/noindex/i.test(html)) problems.push(`Noindex: ${rel}`);
   if(/[—–]/.test(html.replace(/<script[\s\S]*?<\/script>/g,''))) problems.push(`Long dash: ${rel}`);
   if(/>\s*(?:0[1-9]|10)\s*</.test(html)) problems.push(`Decorative numbering: ${rel}`);
+  if(!html.includes('z4hsgdjk7o')) problems.push(`Clarity: ${rel}`);
   for(const [lang] of LANGS) if(!html.includes(`hreflang="${lang}"`)) problems.push(`Hreflang ${lang}: ${rel}`);
   if(!html.includes(`href="${DESTINATION_URL.replaceAll('&','&amp;')}"`)) problems.push(`CTA: ${rel}`);
   for(const match of html.matchAll(/(?:href|src)="(\/[^"#?]*)(?:#[^"]*)?"/g)) {
