@@ -50,7 +50,7 @@ export function updateSearchCopy({out,brand}){
     const home=rel==='index.html'||(/^[^/]+\/index\.html$/.test(rel)&&locales.has(rel.split('/')[0]));
     const key='/'+rel.replace(/(?:\/)?index\.html$/, '').replace(/\.html$/,'');
     const canonical=byPath.get(key.replace(/\/$/,'')||'/');
-    const copy=home?homeCopy(brand,lang,origin):null;
+    const copy=home&&brand!=='Mellstroy'?homeCopy(brand,lang,origin):null;
     const scripts=[];
     h=h.replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi,block=>{
       let result=block;
