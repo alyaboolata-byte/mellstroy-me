@@ -74,22 +74,24 @@ function page(lang,segment,title,description,body,ogImage) {
 function home(lang) {
   const c=COPY[lang];
   const hero = `<section class="hero"><div class="shell brand-intro"><p class="eyebrow">MELLSTROY CASINO</p><h1>${esc(c.heroTitle)}</h1><p class="hero-lead">${esc(c.heroText)}</p><div class="hero-actions">${external(c.cta)}${link(local(lang,topicPath('registration')),c.register,'btn btn-outline')}</div></div></section>`;
+  const brandEntity = `<section class="section brand-entity"><div class="shell"><h2>${esc(c.heroTitle)}</h2><p>${esc(c.brandText||c.description)}</p><div class="hero-actions">${external(c.cta)}${link(local(lang,topicPath('login')),c.topicNames.login,'btn btn-outline')}</div></div></section>`;
   const offers = `<section id="offers" class="section offers"><div class="shell"><h2>${esc(c.offersTitle)}</h2>${bannerRow(lang)}</div></section>`;
   const overview = `<section class="section overview"><div class="shell"><span class="overline">${esc(c.overviewTitle)}</span><div class="overview-grid"><h2>${esc(c.overviewTitle)}</h2><p>${esc(c.overviewLead)}</p></div><div class="steps">${c.steps.map(([,title,text])=>`<article><h3>${esc(title)}</h3><p>${esc(text)}</p></article>`).join('')}</div></div></section>`;
   const games = `<section id="games" class="section games"><div class="shell"><h2>${esc(c.featuredTitle)}</h2><p>${esc(c.featuredText)}</p><div class="game-links">${OFFERS.slice(2,6).map(o=>link(local(lang,offerPath(o.id)),offerName(lang,o),'game-pill')).join('')}</div></div></section>`;
   const articles = `<section id="articles" class="section articles"><div class="shell"><span class="overline">${esc(c.nav[3])}</span><div class="section-heading"><div><h2>${esc(c.articlesTitle)}</h2><p>${esc(c.articlesLead)}</p></div></div><div class="article-grid">${TOPICS.map(id=>`<a href="${local(lang,topicPath(id))}" class="article-link"><h3>${esc(c.topicNames[id])}</h3><p>${esc(c.topicBody[id][0])}</p><b>${icon('external')}</b></a>`).join('')}</div></div></section>`;
-  const intent = `<section class="section intent-coverage"><div class="shell"><h2>${esc(c.heroTitle)}</h2><div class="intent-grid">${TOPICS.map(id=>`<article><h3>${esc(c.topicNames[id])}</h3>${c.topicBody[id].map(p=>`<p>${esc(p)}</p>`).join('')}<a href="${local(lang,topicPath(id))}">${esc(c.details)}</a></article>`).join('')}</div></div></section>`;
+  const intent = `<section class="section intent-coverage"><div class="shell"><h2>${esc(c.heroTitle)}</h2><div class="intent-grid">${TOPICS.map(id=>`<article><h3>${esc(c.topicNames[id])}</h3>${c.topicBody[id].slice(1).map(p=>`<p>${esc(p)}</p>`).join('')}<a href="${local(lang,topicPath(id))}">${esc(c.details)}</a></article>`).join('')}</div></div></section>`;
   const faq = `<section class="section faq"><div class="shell faq-layout"><div><span class="overline">FAQ</span><h2>${esc(c.faqTitle)}</h2></div><div>${c.faq.map(([q,a])=>`<details><summary>${esc(q)}${icon('plus')}</summary><p>${esc(a)}</p></details>`).join('')}</div></div></section>`;
   const final = `<section class="final-cta"><div class="shell final-inner"><div><span class="overline">MELLSTROY</span><h2>${esc(c.heroTitle)}</h2></div>${external(c.cta)}</div></section>`;
   const description=c.description;
-  return page(lang,'',c.title,description,hero+offers+overview+games+articles+intent+faq+final,offerImage(lang,OFFERS[0]));
+  return page(lang,'',c.title,description,hero+brandEntity+offers+overview+games+articles+intent+faq+final,offerImage(lang,OFFERS[0]));
 }
 
 function offerPage(lang,offer) {
   const c=COPY[lang], title=offerName(lang,offer), segment=offerPath(offer.id);
   const intro=`<section class="section offer-detail"><div class="shell"><h1>${esc(title)} | Mellstroy</h1>${banner(lang,offer)}</div></section>`;
+  const explanation=`<section class="section offer-explanation"><div class="shell reading-grid"><article><h2>${esc(title)} - Mellstroy Casino</h2><p>${esc(OFFER_COPY[lang][offer.id][1])}</p><p>${esc(c.offerIntro)}</p>${external(c.cta)}</article><aside><h2>${esc(c.termsTitle)}</h2><div class="condition-list">${c.terms.map(term=>`<div><p>${esc(term)}</p></div>`).join('')}</div></aside></div></section>`;
   const related=`<section class="section related"><div class="shell"><h2>${esc(c.offersTitle)}</h2>${bannerRow(lang,OFFERS.filter(o=>o.id!==offer.id))}</div></section>`;
-  return page(lang,segment,`${title} | Mellstroy Casino | ${languageNames[lang]}`,`${title}. ${c.description}`,intro+related,offerImage(lang,offer));
+  return page(lang,segment,`${title} | Mellstroy Casino | ${languageNames[lang]}`,`${title}. ${c.description}`,intro+explanation+related,offerImage(lang,offer));
 }
 
 function topicPage(lang,id) {
