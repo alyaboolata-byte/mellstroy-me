@@ -1,5 +1,7 @@
+import { EXTRA_COPY } from './extra-locales.mjs';
+
 export const LANGS = [
-  ['ru','Русский'],['en','English'],['pt','Português'],['uk','Українська'],['hi','हिन्दी'],['uz','O‘zbekcha'],['kk','Қазақша']
+  ['ru','Русский'],['pl','Polski'],['en','English'],['pt','Português'],['uk','Українська'],['hi','हिन्दी'],['uz','O‘zbekcha'],['kk','Қазақша'],['tg','Тоҷикӣ'],['de','Deutsch'],['it','Italiano'],['es','Español'],['tr','Türkçe'],['az','Azərbaycanca'],['hy','Հայերեն'],['ro-MD','Română (MD)'],['fr','Français']
 ];
 
 // Каждая языковая версия — отдельный серверный HTML-документ, не машинное переключение интерфейса.
@@ -109,3 +111,8 @@ for (const [lang,values] of Object.entries(brandIntro)) {
 // Payment topic and promotional offer have different search intent.
 COPY.en.topicNames.crypto='Mellstroy Casino crypto payments';
 COPY.pt.topicNames.crypto='Pagamentos com criptomoedas no Mellstroy Casino';
+
+// Each additional locale is editorially authored for its own search language.
+// It is merged here so every generated document receives native metadata,
+// headings, navigation, FAQs and intent-specific body copy.
+Object.assign(COPY, EXTRA_COPY);
