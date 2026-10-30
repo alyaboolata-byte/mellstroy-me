@@ -1,6 +1,6 @@
 // Меняй ссылку здесь: все внешние кнопки на всех языках используют один адрес.
 export const SITE_URL = 'https://mellstroy.me';
-export const DESTINATION_URL = 'https://r1wnbepa.life/?p=h3g6';
+export const DESTINATION_URL = 'https://gd8zo.bemobtrcks.com/go/3c039855-c665-4b11-b8e9-325db507ead8';
 export const BRAND = 'MELLSTROY';
 
 // Дизайн-макеты бонусов. Публикуй точные условия только после проверки у оператора.
