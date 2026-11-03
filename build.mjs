@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { SITE_URL, DESTINATION_URL, BRAND, OFFERS } from './site-config.mjs';
 import { COPY, LANGS } from './content.mjs';
 import { OFFER_COPY } from './offer-content.mjs';
+import { geoText } from './geo-content.mjs';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const DIST = path.join(ROOT, 'dist');
@@ -64,7 +65,7 @@ function head(lang,segment,title,description,ogImage='/assets/favicon.webp') {
   const jsonLd = JSON.stringify({ '@context':'https://schema.org', '@type':'WebPage', name:cleanPunctuation(title), description:cleanPunctuation(description), url:canonical, inLanguage:lang });
   const image=SITE_URL+ogImage;
   const localeAlternates=LANGS.filter(([code])=>code!==lang).map(([code])=>`<meta property="og:locale:alternate" content="${ogLocale(code)}">`).join('');
-  return `<!doctype html><html lang="${lang}"><head><meta name="google-site-verification" content="hsBZPHAVQ9-PA1MukTkZUEittSQKiXXVZHOxNp-sfjo"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${esc(title)}</title><meta name="description" content="${esc(description)}"><meta name="robots" content="index,follow,max-image-preview:large"><link rel="canonical" href="${esc(canonical)}">${alternates}<link rel="alternate" hreflang="x-default" href="${esc(url('en',segment))}"><link rel="icon" type="image/webp" href="/assets/favicon.webp"><meta property="og:type" content="website"><meta property="og:site_name" content="Mellstroy"><meta property="og:locale" content="${ogLocale(lang)}">${localeAlternates}<meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(description)}"><meta property="og:url" content="${esc(canonical)}"><meta property="og:image" content="${esc(image)}"><meta property="og:image:type" content="image/webp"><meta property="og:image:width" content="1672"><meta property="og:image:height" content="940"><meta property="og:image:alt" content="${esc(title)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${esc(title)}"><meta name="twitter:description" content="${esc(description)}"><meta name="twitter:image" content="${esc(image)}"><meta name="twitter:image:alt" content="${esc(title)}"><meta name="theme-color" content="#7131d9"><link rel="stylesheet" href="/styles.css?v=${STYLE_VERSION}"><script type="application/ld+json">${jsonLd.replace(/</g,'\\u003c')}</script><script>(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y)})(window,document,"clarity","script","z4hsgdjk7o");</script><script defer src="/script.js"></script></head>`;
+  return `<!doctype html><html lang="${lang}"><head><meta name="google-site-verification" content="hsBZPHAVQ9-PA1MukTkZUEittSQKiXXVZHOxNp-sfjo"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${esc(title)}</title><meta name="description" content="${esc(description)}"><meta name="robots" content="index,follow,max-image-preview:large"><link rel="canonical" href="${esc(canonical)}">${alternates}<link rel="alternate" hreflang="x-default" href="${esc(url('en',segment))}"><link rel="describedby" href="/llms.txt" type="text/markdown"><link rel="icon" type="image/webp" href="/assets/favicon.webp"><meta property="og:type" content="website"><meta property="og:site_name" content="Mellstroy"><meta property="og:locale" content="${ogLocale(lang)}">${localeAlternates}<meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(description)}"><meta property="og:url" content="${esc(canonical)}"><meta property="og:image" content="${esc(image)}"><meta property="og:image:type" content="image/webp"><meta property="og:image:width" content="1672"><meta property="og:image:height" content="940"><meta property="og:image:alt" content="${esc(title)}"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${esc(title)}"><meta name="twitter:description" content="${esc(description)}"><meta name="twitter:image" content="${esc(image)}"><meta name="twitter:image:alt" content="${esc(title)}"><meta name="theme-color" content="#7131d9"><link rel="stylesheet" href="/styles.css?v=${STYLE_VERSION}"><script type="application/ld+json">${jsonLd.replace(/</g,'\\u003c')}</script><script>(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y)})(window,document,"clarity","script","z4hsgdjk7o");</script><script defer src="/script.js"></script></head>`;
 }
 
 function page(lang,segment,title,description,body,ogImage) {
@@ -72,18 +73,19 @@ function page(lang,segment,title,description,body,ogImage) {
 }
 
 function home(lang) {
-  const c=COPY[lang];
+  const c=COPY[lang], geo=geoText(lang);
   const hero = `<section class="hero"><div class="shell brand-intro"><p class="eyebrow">MELLSTROY CASINO</p><h1>${esc(c.heroTitle)}</h1><p class="hero-lead">${esc(c.heroText)}</p><div class="hero-actions">${external(c.cta)}${link(local(lang,topicPath('registration')),c.register,'btn btn-outline')}</div></div></section>`;
   const brandEntity = `<section class="section brand-entity"><div class="shell"><h2>${esc(c.heroTitle)}</h2><p>${esc(c.brandText||c.description)}</p><div class="hero-actions">${external(c.cta)}${link(local(lang,topicPath('login')),c.topicNames.login,'btn btn-outline')}</div></div></section>`;
   const offers = `<section id="offers" class="section offers"><div class="shell"><h2>${esc(c.offersTitle)}</h2>${bannerRow(lang)}</div></section>`;
   const overview = `<section class="section overview"><div class="shell"><span class="overline">${esc(c.overviewTitle)}</span><div class="overview-grid"><h2>${esc(c.overviewTitle)}</h2><p>${esc(c.overviewLead)}</p></div><div class="steps">${c.steps.map(([,title,text])=>`<article><h3>${esc(title)}</h3><p>${esc(text)}</p></article>`).join('')}</div></div></section>`;
+  const geoCluster = `<section class="section geo-cluster"><div class="shell"><span class="overline">${esc(geo.market)} / ${esc(geo.currency)}</span><div class="geo-grid"><div><h2>${esc(geo.title)}</h2><p>${esc(geo.lead)}</p></div><article><h3>${esc(c.topicNames.payments)}</h3><p>${esc(geo.check)}</p>${link(local(lang,topicPath('payments')),c.details,'text-link')}</article></div></div></section>`;
   const games = `<section id="games" class="section games"><div class="shell"><h2>${esc(c.featuredTitle)}</h2><p>${esc(c.featuredText)}</p><div class="game-links">${OFFERS.slice(2,6).map(o=>link(local(lang,offerPath(o.id)),offerName(lang,o),'game-pill')).join('')}</div></div></section>`;
   const articles = `<section id="articles" class="section articles"><div class="shell"><span class="overline">${esc(c.nav[3])}</span><div class="section-heading"><div><h2>${esc(c.articlesTitle)}</h2><p>${esc(c.articlesLead)}</p></div></div><div class="article-grid">${TOPICS.map(id=>`<a href="${local(lang,topicPath(id))}" class="article-link"><h3>${esc(c.topicNames[id])}</h3><p>${esc(c.topicBody[id][0])}</p><b>${icon('external')}</b></a>`).join('')}</div></div></section>`;
   const intent = `<section class="section intent-coverage"><div class="shell"><h2>${esc(c.heroTitle)}</h2><div class="intent-grid">${TOPICS.map(id=>`<article><h3>${esc(c.topicNames[id])}</h3>${c.topicBody[id].slice(1).map(p=>`<p>${esc(p)}</p>`).join('')}<a href="${local(lang,topicPath(id))}">${esc(c.details)}</a></article>`).join('')}</div></div></section>`;
   const faq = `<section class="section faq"><div class="shell faq-layout"><div><span class="overline">FAQ</span><h2>${esc(c.faqTitle)}</h2></div><div>${c.faq.map(([q,a])=>`<details><summary>${esc(q)}${icon('plus')}</summary><p>${esc(a)}</p></details>`).join('')}</div></div></section>`;
   const final = `<section class="final-cta"><div class="shell final-inner"><div><span class="overline">MELLSTROY</span><h2>${esc(c.heroTitle)}</h2></div>${external(c.cta)}</div></section>`;
   const description=c.description;
-  return page(lang,'',c.title,description,hero+brandEntity+offers+overview+games+articles+intent+faq+final,offerImage(lang,OFFERS[0]));
+  return page(lang,'',c.title,description,hero+brandEntity+offers+overview+geoCluster+games+articles+intent+faq+final,offerImage(lang,OFFERS[0]));
 }
 
 function offerPage(lang,offer) {
@@ -95,9 +97,10 @@ function offerPage(lang,offer) {
 }
 
 function topicPage(lang,id) {
-  const c=COPY[lang], title=c.topicNames[id], body=c.topicBody[id], segment=topicPath(id);
+  const c=COPY[lang], geo=geoText(lang), title=c.topicNames[id], body=c.topicBody[id], segment=topicPath(id);
   const hero=`<section class="article-hero"><div class="shell"><span class="overline">MELLSTROY / ${esc(c.nav[3])}</span><h1>${esc(title)}</h1><p>${esc(body[0])}</p></div></section>`;
-  const content=`<section class="section article-body"><div class="shell article-layout"><article><h2>${esc(title)}</h2>${body.slice(1).map(text=>`<p>${esc(text)}</p>`).join('')}<div class="hero-actions">${external(c.cta)}</div></article><aside><h2>${esc(c.footerTitle)}</h2>${TOPICS.filter(topic=>topic!==id).map(topic=>link(local(lang,topicPath(topic)),c.topicNames[topic])).join('')}</aside></div></section>`;
+  const localParagraph=id==='payments'?`<div class="article-callout"><h3>${esc(geo.title)} - ${esc(geo.currency)}</h3><p>${esc(geo.lead)}</p><p>${esc(geo.check)}</p></div>`:'';
+  const content=`<section class="section article-body"><div class="shell article-layout"><article><h2>${esc(title)}</h2>${body.slice(1).map(text=>`<p>${esc(text)}</p>`).join('')}${localParagraph}<div class="hero-actions">${external(c.cta)}</div></article><aside><h2>${esc(c.footerTitle)}</h2>${TOPICS.filter(topic=>topic!==id).map(topic=>link(local(lang,topicPath(topic)),c.topicNames[topic])).join('')}</aside></div></section>`;
   const final=`<section class="final-cta"><div class="shell final-inner"><div><span class="overline">MELLSTROY</span><h2>${esc(c.heroTitle)}</h2></div>${external(c.cta)}</div></section>`;
   return page(lang,segment,`${title} | Mellstroy Casino`,`${body[0]} ${body[1]}`,hero+content+final);
 }
@@ -121,6 +124,14 @@ const indexConfig=JSON.parse(fs.readFileSync(path.join(ROOT,'indexnow.config.jso
 indexConfig.sites[0].urls=segments.flatMap(segment=>LANGS.map(([lang])=>url(lang,segment)));
 fs.writeFileSync(path.join(DIST,'indexnow.config.json'),JSON.stringify(indexConfig,null,2)+'\n');
 fs.writeFileSync(path.join(DIST,'robots.txt'),`User-agent: *\nAllow: /\nSitemap: ${SITE_URL}/sitemap.xml\n`);
+const llmsPrimary=[
+  ['Mellstroy Casino bonuses','en','guide/bonuses/'],['Mellstroy Casino login','en','guide/login/'],
+  ['Registration','en','guide/registration/'],['Current mirror and access','en','guide/mirror/'],
+  ['Deposits and withdrawals','en','guide/payments/'],['Mobile access','en','guide/mobile/'],
+  ['Crypto deposits','en','guide/crypto/'],['Slots catalogue','en','guide/slots/']
+];
+const llms=`# Mellstroy.me\n\n> Multilingual Mellstroy Casino hub focused on bonuses, access, registration, payments, mobile use, crypto deposits and slot-specific offer guides.\n\nMellstroy.me is organised as a commercial-intent bonus and access guide. It is separate from the editorial game-reference site on the Cyrillic domain. Availability, currencies, payment methods and offer terms can vary by country and must be confirmed on the platform.\n\n## Primary topics\n\n${llmsPrimary.map(([label,lang,segment])=>`- [${label}](${url(lang,segment)}): Focused page for this search intent.`).join('\n')}\n\n## Local market editions\n\n${LANGS.map(([lang,name])=>{const geo=geoText(lang);return `- [${name}: ${geo.market}](${url(lang)}): ${geo.currency} and local payment-intent guidance.`}).join('\n')}\n\n## Offer guides\n\n${OFFERS.map(offer=>`- [${offer.label}](${url('en',offerPath(offer.id))}): Offer artwork and conditions to verify.`).join('\n')}\n\n## Technical discovery\n\n- [XML sitemap](${SITE_URL}/sitemap.xml): Complete list of ${LANGS.length * segments.length} canonical pages with hreflang and lastmod.\n- [Robots directives](${SITE_URL}/robots.txt): Crawler access and sitemap location.\n`;
+fs.writeFileSync(path.join(DIST,'llms.txt'),llms);
 console.log(`Built ${LANGS.length * segments.length} pages in ${DIST}`);
 
 
