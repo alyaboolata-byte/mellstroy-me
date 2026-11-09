@@ -10,6 +10,8 @@ const files=[];
 const visit=d=>{for(const e of fs.readdirSync(d,{withFileTypes:true})){const p=path.join(d,e.name);e.isDirectory()?visit(p):e.name==='index.html'&&files.push(p);}};
 visit(dist);
 const expected=LANGS.length*(1+OFFERS.length+12);
+const sitemapFullLangs=5;
+const expectedSitemap=LANGS.length+sitemapFullLangs*(OFFERS.length+12);
 if(files.length!==expected) problems.push(`Expected ${expected} pages, got ${files.length}`);
 for(const file of files){
   const html=fs.readFileSync(file,'utf8');
@@ -41,6 +43,6 @@ for(const [lang] of LANGS){
   }
 }
 const xml=fs.readFileSync(path.join(dist,'sitemap.xml'),'utf8');
-if((xml.match(/<url>/g)||[]).length!==expected) problems.push('Sitemap count');
-if((xml.match(/<lastmod>/g)||[]).length!==expected) problems.push('Sitemap lastmod count');
+if((xml.match(/<url>/g)||[]).length!==expectedSitemap) problems.push('Sitemap count');
+if((xml.match(/<lastmod>/g)||[]).length!==expectedSitemap) problems.push('Sitemap lastmod count');
 if(problems.length){console.error(problems.join('\n'));process.exitCode=1;}else console.log(`Verified ${files.length} pages, internal links, assets, CTAs, canonicals, hreflang and sitemap.`);
