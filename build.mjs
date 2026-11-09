@@ -11,6 +11,44 @@ const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const DIST = path.join(ROOT, 'dist');
 const STYLE_VERSION = createHash('sha256').update(fs.readFileSync(path.join(ROOT,'styles.css'))).digest('hex').slice(0,12);
 const TOPICS = ['bonuses','promo','login','registration','mirror','casino','slots','payments','mobile','app','crypto','safety'];
+const INDEX_ENHANCEMENTS = {
+  pt: {
+    crypto: [
+      'No depósito em criptomoeda, confirme a rede indicada no caixa antes de copiar o endereço. Um envio por rede incompatível pode não ser creditado e normalmente não pode ser revertido.',
+      'Compare o valor mínimo, o prazo de confirmação, a cotação aplicada e as regras de saque. Se houver bônus ativo, verifique também o rollover e quais jogos contribuem para o requisito.'
+    ],
+    login: [
+      'Ao entrar, confira se o domínio e o certificado HTTPS correspondem ao endereço oficial utilizado por você. Evite salvar a senha em computadores compartilhados.',
+      'Se o código de acesso não chegar, revise o telefone ou e-mail cadastrado e use apenas a recuperação disponível na plataforma. Nunca envie códigos de confirmação a terceiros.'
+    ],
+    safety: [
+      'Defina antecipadamente um limite de depósito, perda e tempo de sessão. Encerrar a sessão ao atingir qualquer limite evita decisões impulsivas.',
+      'Não use crédito ou dinheiro reservado para despesas essenciais. As ferramentas de pausa e autoexclusão devem ser ativadas diretamente na conta quando necessário.'
+    ],
+    payments: [
+      'Para contas brasileiras, a disponibilidade de Pix, cartões ou criptomoedas depende do perfil e da região. Confira no caixa os limites mínimo e máximo antes de transferir.',
+      'Saques podem exigir verificação de identidade e uso do mesmo método do depósito. Compare taxas, prazo estimado e documentos solicitados antes de escolher a forma de pagamento.'
+    ]
+  },
+  hi: {
+    mirror: [
+      'मिरर लिंक खोलने से पहले डोमेन की वर्तनी, HTTPS प्रमाणपत्र और लिंक के स्रोत की जाँच करें। नकली पेज असली लॉगिन स्क्रीन की नकल कर सकते हैं।',
+      'यदि मुख्य पता नहीं खुलता है, तो केवल प्लेटफ़ॉर्म द्वारा बताए गए वैकल्पिक पते का उपयोग करें। पासवर्ड या पुष्टि कोड किसी संदेश या अनजान फ़ॉर्म में साझा न करें।'
+    ],
+    bonuses: [
+      'बोनस चुनते समय केवल प्रतिशत न देखें। न्यूनतम जमा, अधिकतम बोनस, wagering requirement, समय सीमा और योग्य गेम की सूची की तुलना करें।',
+      'UPI, बैंक कार्ड, वॉलेट या क्रिप्टो से जमा करने पर अलग नियम लागू हो सकते हैं। सक्रिय करने से पहले खाते में दिखाई गई शर्तों को पढ़ें।'
+    ],
+    mobile: [
+      'मोबाइल ब्राउज़र में लॉगिन करते समय निजी नेटवर्क और अपडेटेड ब्राउज़र का उपयोग करें। सार्वजनिक Wi-Fi पर भुगतान या पहचान दस्तावेज़ अपलोड करने से बचें।',
+      'ऐप केवल उस डाउनलोड चैनल से लें जिसे प्लेटफ़ॉर्म स्वयं दिखाता है। इंस्टॉलेशन से पहले प्रकाशक, अनुमतियाँ और फ़ाइल का स्रोत जाँचें।'
+    ],
+    payments: [
+      'भारत में उपलब्ध भुगतान विकल्प खाते और क्षेत्र के अनुसार बदल सकते हैं। कैशियर में UPI, बैंक कार्ड, डिजिटल वॉलेट और क्रिप्टो की वास्तविक उपलब्धता जाँचें।',
+      'जमा और निकासी की सीमा, शुल्क, processing time और KYC दस्तावेज़ पहले देखें। निकासी के लिए जमा वाला ही तरीका आवश्यक हो सकता है।'
+    ]
+  }
+};
 const languageNames = Object.fromEntries(LANGS);
 const cleanPunctuation = value => String(value).replace(/\s*[—–]\s*/g,' - ');
 const esc = (value) => cleanPunctuation(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -97,7 +135,7 @@ function offerPage(lang,offer) {
 }
 
 function topicPage(lang,id) {
-  const c=COPY[lang], geo=geoText(lang), title=c.topicNames[id], body=c.topicBody[id], segment=topicPath(id);
+  const c=COPY[lang], geo=geoText(lang), title=c.topicNames[id], body=[...c.topicBody[id], ...(INDEX_ENHANCEMENTS[lang]?.[id] || [])], segment=topicPath(id);
   const hero=`<section class="article-hero"><div class="shell"><span class="overline">MELLSTROY / ${esc(c.nav[3])}</span><h1>${esc(title)}</h1><p>${esc(body[0])}</p></div></section>`;
   const localParagraph=id==='payments'?`<div class="article-callout"><h3>${esc(geo.title)} - ${esc(geo.currency)}</h3><p>${esc(geo.lead)}</p><p>${esc(geo.check)}</p></div>`:'';
   const content=`<section class="section article-body"><div class="shell article-layout"><article><h2>${esc(title)}</h2>${body.slice(1).map(text=>`<p>${esc(text)}</p>`).join('')}${localParagraph}<div class="hero-actions">${external(c.cta)}</div></article><aside><h2>${esc(c.footerTitle)}</h2>${TOPICS.filter(topic=>topic!==id).map(topic=>link(local(lang,topicPath(topic)),c.topicNames[topic])).join('')}</aside></div></section>`;
