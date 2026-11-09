@@ -110,6 +110,11 @@ fs.mkdirSync(DIST,{recursive:true});
 fs.cpSync(path.join(ROOT,'assets'),path.join(DIST,'assets'),{recursive:true});
 for (const name of ['styles.css','script.js','104d35d9cda7b4335046104b8265bf54.txt']) fs.copyFileSync(path.join(ROOT,name),path.join(DIST,name));
 const segments=['',...OFFERS.map(o=>offerPath(o.id)),...TOPICS.map(topicPath)];
+// Keep every locale live and linked, but concentrate crawl demand on the strongest markets.
+const SITEMAP_FULL_LANGS = new Set(['ru','en','de','pl','pt']);
+const sitemapEntries = LANGS.flatMap(([lang]) =>
+  (SITEMAP_FULL_LANGS.has(lang) ? segments : ['']).map(segment => [lang, segment])
+);
 for (const [lang] of LANGS) {
   const prefix=lang==='ru'?'':lang;
   save(prefix,home(lang));
@@ -118,10 +123,10 @@ for (const [lang] of LANGS) {
 }
 const xmlEsc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 const lastmod=new Date().toISOString().slice(0,10);
-const sitemap=`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${segments.flatMap(segment=>LANGS.map(([lang])=>`<url><loc>${xmlEsc(url(lang,segment))}</loc><lastmod>${lastmod}</lastmod>${LANGS.map(([alternate])=>`<xhtml:link rel="alternate" hreflang="${alternate}" href="${xmlEsc(url(alternate,segment))}"/>`).join('')}<xhtml:link rel="alternate" hreflang="x-default" href="${xmlEsc(url('en',segment))}"/></url>`)).join('\n')}\n</urlset>`;
+const sitemap=`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${sitemapEntries.map(([lang,segment])=>`<url><loc>${xmlEsc(url(lang,segment))}</loc><lastmod>${lastmod}</lastmod>${LANGS.map(([alternate])=>`<xhtml:link rel="alternate" hreflang="${alternate}" href="${xmlEsc(url(alternate,segment))}"/>`).join('')}<xhtml:link rel="alternate" hreflang="x-default" href="${xmlEsc(url('en',segment))}"/></url>`).join('\n')}\n</urlset>`;
 fs.writeFileSync(path.join(DIST,'sitemap.xml'),sitemap);
 const indexConfig=JSON.parse(fs.readFileSync(path.join(ROOT,'indexnow.config.json'),'utf8'));
-indexConfig.sites[0].urls=segments.flatMap(segment=>LANGS.map(([lang])=>url(lang,segment)));
+indexConfig.sites[0].urls=sitemapEntries.map(([lang,segment])=>url(lang,segment));
 fs.writeFileSync(path.join(DIST,'indexnow.config.json'),JSON.stringify(indexConfig,null,2)+'\n');
 fs.writeFileSync(path.join(DIST,'robots.txt'),`User-agent: *\nAllow: /\nSitemap: ${SITE_URL}/sitemap.xml\n`);
 const llmsPrimary=[
@@ -130,7 +135,7 @@ const llmsPrimary=[
   ['Deposits and withdrawals','en','guide/payments/'],['Mobile access','en','guide/mobile/'],
   ['Crypto deposits','en','guide/crypto/'],['Slots catalogue','en','guide/slots/']
 ];
-const llms=`# Mellstroy.me\n\n> Multilingual Mellstroy Casino hub focused on bonuses, access, registration, payments, mobile use, crypto deposits and slot-specific offer guides.\n\nMellstroy.me is organised as a commercial-intent bonus and access guide. It is separate from the editorial game-reference site on the Cyrillic domain. Availability, currencies, payment methods and offer terms can vary by country and must be confirmed on the platform.\n\n## Primary topics\n\n${llmsPrimary.map(([label,lang,segment])=>`- [${label}](${url(lang,segment)}): Focused page for this search intent.`).join('\n')}\n\n## Local market editions\n\n${LANGS.map(([lang,name])=>{const geo=geoText(lang);return `- [${name}: ${geo.market}](${url(lang)}): ${geo.currency} and local payment-intent guidance.`}).join('\n')}\n\n## Offer guides\n\n${OFFERS.map(offer=>`- [${offer.label}](${url('en',offerPath(offer.id))}): Offer artwork and conditions to verify.`).join('\n')}\n\n## Technical discovery\n\n- [XML sitemap](${SITE_URL}/sitemap.xml): Complete list of ${LANGS.length * segments.length} canonical pages with hreflang and lastmod.\n- [Robots directives](${SITE_URL}/robots.txt): Crawler access and sitemap location.\n`;
+const llms=`# Mellstroy.me\n\n> Multilingual Mellstroy Casino hub focused on bonuses, access, registration, payments, mobile use, crypto deposits and slot-specific offer guides.\n\nMellstroy.me is organised as a commercial-intent bonus and access guide. It is separate from the editorial game-reference site on the Cyrillic domain. Availability, currencies, payment methods and offer terms can vary by country and must be confirmed on the platform.\n\n## Primary topics\n\n${llmsPrimary.map(([label,lang,segment])=>`- [${label}](${url(lang,segment)}): Focused page for this search intent.`).join('\n')}\n\n## Local market editions\n\n${LANGS.map(([lang,name])=>{const geo=geoText(lang);return `- [${name}: ${geo.market}](${url(lang)}): ${geo.currency} and local payment-intent guidance.`}).join('\n')}\n\n## Offer guides\n\n${OFFERS.map(offer=>`- [${offer.label}](${url('en',offerPath(offer.id))}): Offer artwork and conditions to verify.`).join('\n')}\n\n## Technical discovery\n\n- [XML sitemap](${SITE_URL}/sitemap.xml): Priority crawl list of ${sitemapEntries.length} canonical pages with hreflang and lastmod; all ${LANGS.length * segments.length} localized pages remain available.\n- [Robots directives](${SITE_URL}/robots.txt): Crawler access and sitemap location.\n`;
 fs.writeFileSync(path.join(DIST,'llms.txt'),llms);
 console.log(`Built ${LANGS.length * segments.length} pages in ${DIST}`);
 
